@@ -1,23 +1,49 @@
-import logo from './logo.svg';
 import './App.css';
+import foods from './foods.json';
+import { useState } from 'react';
+import FoodBox from './components/FoodBox';
+import AddFoodForm from './components/AddFoodForm';
+import Search from 'antd/es/transfer/search';
 
 function App() {
+  const [allFood, setAllFood] = useState(foods);
+
+  const addNewFood = (newFood) => {
+    const food = [newFood, ...allFood];
+    setAllFood(food);
+  };
+
+  const searchFood = (searchString) => {
+    const searchedFood = allFood.filter((food) => {
+      return food.name.includes(searchString);
+    });
+    setAllFood(searchedFood);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Search searchFood={searchFood} />
+
+      {allFood.map((food) => {
+        return (
+          <div>
+            <FoodBox food={food} key={food.name} />
+            {/* <p> {food.name} </p>
+            <img src={food.image} alt="" width={100} /> */}
+          </div>
+        );
+      })}
+
+      <FoodBox
+        food={{
+          name: 'Orange',
+          calories: 85,
+          image: 'https://i.imgur.com/abKGOcv.jpg',
+          servings: 1,
+        }}
+      />
+
+      <AddFoodForm addNewFood={addNewFood} />
     </div>
   );
 }
